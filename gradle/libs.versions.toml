@@ -1,0 +1,12 @@
+[versions]
+kotlin = "2.3.20"
+agp = "9.4.0"
+compose = "1.10.3"
+mavenPublish = "0.37.0"
+
+[plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+android-kmp = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }

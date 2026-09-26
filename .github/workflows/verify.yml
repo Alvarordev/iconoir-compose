@@ -1,0 +1,57 @@
+name: Verify
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - name: Install Android platforms
+        run: sdkmanager 'platforms;android-37.2' 'build-tools;37.0.0'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Pin upstream icons
+        run: |
+          git clone --depth 1 --branch v7.12.1 --filter=blob:none --sparse https://github.com/iconoir-icons/iconoir.git ../iconoir-upstream
+          git -C ../iconoir-upstream sparse-checkout set icons
+          test "$(git -C ../iconoir-upstream rev-parse HEAD)" = 'd7dfa4d0341df0670bfed9fc24221c9d7ef2112e'
+      - name: Test generator and verify catalog
+        run: |
+          python -m pip install -r tools/requirements.txt
+          python -m unittest discover -s tools -p 'test_*.py'
+          python tools/generate.py --source ../iconoir-upstream --check
+      - name: Build and publish locally
+        run: ./gradlew :iconoir-compose:assemble :iconoir-compose:desktopTest :iconoir-compose:testAndroidHostTest :iconoir-compose:publishToMavenLocal --max-workers=2
+      - name: Build Otaro-compatible Android consumer
+        run: ./gradlew -p samples/android-consumer :app:assembleRelease --max-workers=2
+      - name: Compile independent KMP consumer
+        run: ./gradlew -p samples/kmp-consumer compileCommonMainKotlinMetadata compileAndroidMain compileKotlinDesktop --max-workers=2
+      - name: Verify R8 size and reachability
+        run: |
+          ./gradlew -p samples/android-baseline :app:assembleRelease --max-workers=2
+          python tools/check_size.py
+  macos:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - name: Install Android platform
+        run: sdkmanager 'platforms;android-37.2' 'build-tools;37.0.0'
+      - name: Compile and publish iOS library locally
+        run: ./gradlew :iconoir-compose:compileKotlinIosArm64 :iconoir-compose:compileKotlinIosSimulatorArm64 :iconoir-compose:publishToMavenLocal --max-workers=2
+      - name: Compile independent iOS consumer
+        run: ./gradlew -p samples/kmp-consumer compileKotlinIosArm64 compileKotlinIosSimulatorArm64 --max-workers=2
