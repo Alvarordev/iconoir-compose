@@ -71,7 +71,14 @@ The sample also contains a **debug-only** `GalleryActivity` showing six represen
 
 ## Publishing
 
-The Gradle build configures Maven Central's Portal through the Vanniktech publishing plugin. First verify ownership of `io.github.alvarordev` at [Central Portal](https://central.sonatype.com/) and create a GPG key whose public key is available to Central. Set `ORG_GRADLE_PROJECT_mavenCentralUsername`, `ORG_GRADLE_PROJECT_mavenCentralPassword`, `ORG_GRADLE_PROJECT_signingInMemoryKey`, and `ORG_GRADLE_PROJECT_signingInMemoryKeyPassword` outside version control. With a release tag matching the version:
+The Gradle build configures Maven Central's Portal through the Vanniktech publishing plugin. To publish a release:
+
+1. Register and verify ownership of `io.github.alvarordev` in [Central Portal](https://central.sonatype.com/), then generate a Central Portal **user token** (not the account password).
+2. Create a GPG signing key and make its public key discoverable to Central. Store the private ASCII-armored key and passphrase outside version control.
+3. Configure GitHub repository Actions secrets: `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD` (the two parts of the Portal user token), `SIGNING_IN_MEMORY_KEY`, and `SIGNING_IN_MEMORY_KEY_PASSWORD`.
+4. Verify a green [Verify workflow](https://github.com/Alvarordev/iconoir-compose/actions/workflows/verify.yml) for the release commit. Tag that commit as `v0.1.0` and push the tag. `.github/workflows/release.yml` validates the tag and secrets, builds the iOS variants on macOS, runs tests and publishes all variants to Central.
+
+Local manual publishing uses the corresponding `ORG_GRADLE_PROJECT_mavenCentralUsername`, `ORG_GRADLE_PROJECT_mavenCentralPassword`, `ORG_GRADLE_PROJECT_signingInMemoryKey`, and `ORG_GRADLE_PROJECT_signingInMemoryKeyPassword` environment variables (do not add them to the repository):
 
 ```sh
 ./gradlew :iconoir-compose:publishAndReleaseToMavenCentral -PreleaseVersion=0.1.0
