@@ -17,13 +17,13 @@
 
 ## Quick start
 
-Version **`0.1.0`** is available on [Maven Central](https://central.sonatype.com/artifact/io.github.alvarordev/iconoir-compose/0.1.0). Ensure your project resolves dependencies from `google()` and `mavenCentral()`.
+Version **`0.2.0`** is available on [Maven Central](https://central.sonatype.com/artifact/io.github.alvarordev/iconoir-compose/0.2.0). Ensure your project resolves dependencies from `google()` and `mavenCentral()`.
 
 **Android app** — add to your module's `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("io.github.alvarordev:iconoir-compose:0.1.0")
+    implementation("io.github.alvarordev:iconoir-compose:0.2.0")
 }
 ```
 
@@ -33,7 +33,7 @@ dependencies {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("io.github.alvarordev:iconoir-compose:0.1.0")
+            implementation("io.github.alvarordev:iconoir-compose:0.2.0")
         }
     }
 }
@@ -74,6 +74,28 @@ Icons are **extension properties**: importing `Iconoir` alone is not enough. Imp
 
 Material is only used in the example: the library itself depends on Compose UI, not Material. See the [Spanish quick guide](docs/guia-rapida.md) for a Material-free example using `Image` and `rememberVectorPainter`, plus installation and troubleshooting.
 
+## Adjustable stroke weight
+
+Iconoir's regular artwork uses a default stroke weight of **1.5** on its 24-unit viewport. Use `rememberIconoirVector` to render it thinner or thicker without rebuilding it on every recomposition:
+
+```kotlin
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.Composable
+import io.github.alvarordev.iconoir.compose.Iconoir
+import io.github.alvarordev.iconoir.compose.rememberIconoirVector
+import io.github.alvarordev.iconoir.compose.regular.Bell
+
+@Composable
+fun ThickBell() {
+    Icon(
+        imageVector = rememberIconoirVector(Iconoir.Regular.Bell, strokeWeight = 2f),
+        contentDescription = "Notifications",
+    )
+}
+```
+
+For one-off use outside a composable, import `io.github.alvarordev.iconoir.compose.withStrokeWeight` and call `Iconoir.Regular.Bell.withStrokeWeight(2f)`. This creates a new vector; the default `1.5f` returns the original. Only actual strokes change: pure filled icons such as `Iconoir.Solid.Heart` are unaffected. Size remains independent (`Modifier.size(...)`).
+
 ## Platform support
 
 | Target | Published variant |
@@ -82,7 +104,7 @@ Material is only used in the example: the library itself depends on Compose UI, 
 | iOS | `iosArm64` and `iosSimulatorArm64` |
 | JVM Desktop | JVM library (JDK 17) |
 
-The `0.1.0` library is built with Kotlin 2.3.20 and Compose Multiplatform 1.10.3. Android consumers can use their existing Compose BOM; the [Android sample](samples/android-consumer) verifies consumption with BOM 2026.03.01, AGP 9.4.0, and minSdk 24. [KMP sample](samples/kmp-consumer) verifies usage from `commonMain` on all published platforms.
+The `0.2.0` library is built with Kotlin 2.3.20 and Compose Multiplatform 1.10.3. Android consumers can use their existing Compose BOM; the [Android sample](samples/android-consumer) verifies consumption with BOM 2026.03.01, AGP 9.4.0, and minSdk 24. [KMP sample](samples/kmp-consumer) verifies usage from `commonMain` on all published platforms.
 
 ## Size and performance
 

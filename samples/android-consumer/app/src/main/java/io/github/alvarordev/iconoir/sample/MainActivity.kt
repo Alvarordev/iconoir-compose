@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import io.github.alvarordev.iconoir.compose.Iconoir
+import io.github.alvarordev.iconoir.compose.rememberIconoirVector
 import io.github.alvarordev.iconoir.compose.regular.Bell
 import io.github.alvarordev.iconoir.compose.solid.Heart
 
@@ -29,7 +30,7 @@ class MainActivity : ComponentActivity() {
                     Column(Modifier.safeDrawingPadding().padding(32.dp)) {
                         Text("Iconoir regular / solid")
                         Row {
-                            Icon(Iconoir.Regular.Bell, contentDescription = "Notifications", tint = Color.Black, modifier = Modifier.size(64.dp))
+                            Icon(rememberIconoirVector(Iconoir.Regular.Bell, strokeWeight = 2f), contentDescription = "Notifications", tint = Color.Black, modifier = Modifier.size(64.dp))
                             Icon(Iconoir.Solid.Heart, contentDescription = null, tint = Color.Red, modifier = Modifier.size(64.dp))
                         }
                     }

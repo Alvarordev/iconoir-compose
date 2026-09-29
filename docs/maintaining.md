@@ -21,7 +21,7 @@ python3 tools/check_size.py
 ./gradlew -p samples/kmp-consumer compileCommonMainKotlinMetadata compileAndroidMain compileKotlinDesktop compileKotlinIosArm64 compileKotlinIosSimulatorArm64
 ```
 
-The Android and KMP consumer samples resolve `0.1.0-SNAPSHOT` from Maven Local. The Android size check compares a two-icon, R8-minified app with its no-icon baseline and confirms only those icons remain reachable; it does not predict size in every consumer. The debug-only [`GalleryActivity`](../samples/android-consumer/app/src/debug/java/io/github/alvarordev/iconoir/sample/GalleryActivity.kt) displays regular, solid, transformed, dashed, clipped, and cutout artwork for visual inspection.
+The Android and KMP consumer samples resolve `0.2.0-SNAPSHOT` from Maven Local. The Android size check compares a two-icon, R8-minified app with its no-icon baseline and confirms only those icons remain reachable; it does not predict size in every consumer. The debug-only [`GalleryActivity`](../samples/android-consumer/app/src/debug/java/io/github/alvarordev/iconoir/sample/GalleryActivity.kt) displays regular, solid, transformed, dashed, clipped, and cutout artwork for visual inspection.
 
 [Verify CI](../.github/workflows/verify.yml) runs Linux checks and compiles the iOS library and independent iOS consumer on macOS.
 
@@ -42,6 +42,12 @@ Omit `--check` to regenerate. `tools/generate.py` verifies the upstream commit, 
 
 The generator emits individual icon files and segments dashed strokes at generation time because `ImageVector` has no dash path effect. Upstream regular `snapchat` has an opaque white canvas that is treated as transparent; solid `dots-grid-3x3` uses white dots that become transparent cutouts so consumer tint still works. Recheck those exceptions if the original SVGs change. No source retrieval or parsing occurs in consumer builds.
 
+## Stroke-weight implementation
+
+`ImageVector.withStrokeWeight(weight)` in `StrokeWeight.kt` copies a generated vector's group/path tree, preserving geometry, fills, transforms, clip paths, trim properties, and tint metadata. It scales only paths with a stroke by `weight / 1.5f`; this retains deliberate variations such as the 1.2195-wide paths in `Frame`. The default weight and fill-only vectors return the original cached instance. `rememberIconoirVector(icon, weight)` caches the adjusted instance per icon/weight within a composition, avoiding vector construction on recomposition. Avoid calling `withStrokeWeight` directly on every frame.
+
+Use `StrokeWeightTest` for stroke, fill, transformed, dashed, and invalid-weight coverage. The Android sample and KMP common sample exercise the remembered API. Stroke-weight adjustment was introduced in `0.2.0`; `0.1.0` remains immutable and does not include this API.
+
 ## Publishing a new version
 
 1. Ensure CI passes on the release commit. Update docs and provenance when changing the icon catalog; breaking icon removals or renames require an API compatibility decision.
@@ -53,7 +59,7 @@ The generator emits individual icon files and segments dashed strokes at generat
 For a manual release **from macOS**, supply the corresponding `ORG_GRADLE_PROJECT_mavenCentralUsername`, `ORG_GRADLE_PROJECT_mavenCentralPassword`, `ORG_GRADLE_PROJECT_signingInMemoryKey`, and `ORG_GRADLE_PROJECT_signingInMemoryKeyPassword` environment variables outside the repository and run:
 
 ```sh
-./gradlew :iconoir-compose:publishAndReleaseToMavenCentral -PreleaseVersion=0.2.0
+./gradlew :iconoir-compose:publishAndReleaseToMavenCentral -PreleaseVersion=0.3.0
 ```
 
 The library's source code is [MIT licensed](../LICENSE); upstream artwork retains the [Iconoir MIT notice](../upstream/LICENSE).

@@ -2,7 +2,7 @@
 
 [Inicio](../README.md) · [Catálogo de nombres](../upstream/catalog.json) · [Iconos originales](https://iconoir.com/)
 
-Esta guía usa la versión **`0.1.0`**, publicada en [Maven Central](https://central.sonatype.com/artifact/io.github.alvarordev/iconoir-compose/0.1.0). Sirve para apps Android con Jetpack Compose y para código compartido de Compose Multiplatform.
+Esta guía usa la versión **`0.2.0`**, publicada en [Maven Central](https://central.sonatype.com/artifact/io.github.alvarordev/iconoir-compose/0.2.0). Sirve para apps Android con Jetpack Compose y para código compartido de Compose Multiplatform.
 
 ## 1. Instala la dependencia
 
@@ -12,7 +12,7 @@ Verifica que en el `settings.gradle.kts` de tu proyecto existan los repositorios
 
 ```kotlin
 dependencies {
-    implementation("io.github.alvarordev:iconoir-compose:0.1.0")
+    implementation("io.github.alvarordev:iconoir-compose:0.2.0")
 }
 ```
 
@@ -22,7 +22,7 @@ dependencies {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("io.github.alvarordev:iconoir-compose:0.1.0")
+            implementation("io.github.alvarordev:iconoir-compose:0.2.0")
         }
     }
 }
@@ -81,7 +81,29 @@ fun Campana() {
 }
 ```
 
-## 3. Encuentra otros iconos
+## 3. Ajusta el grosor del trazo
+
+El grosor predeterminado de los trazos es **1.5** en la cuadrícula de 24 unidades de Iconoir. `rememberIconoirVector` cambia el grosor sin reconstruir el vector en cada recomposición:
+
+```kotlin
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.Composable
+import io.github.alvarordev.iconoir.compose.Iconoir
+import io.github.alvarordev.iconoir.compose.rememberIconoirVector
+import io.github.alvarordev.iconoir.compose.regular.Bell
+
+@Composable
+fun CampanaGruesa() {
+    Icon(
+        imageVector = rememberIconoirVector(Iconoir.Regular.Bell, strokeWeight = 2f),
+        contentDescription = "Notificaciones",
+    )
+}
+```
+
+Para crear un vector fuera de Compose, importa `io.github.alvarordev.iconoir.compose.withStrokeWeight` y usa `Iconoir.Regular.Bell.withStrokeWeight(2f)`. La función devuelve el vector original cuando el peso es `1.5f`. Los iconos sólidos formados solo por relleno, como `Heart`, no cambian; `Modifier.size(...)` sigue controlando el tamaño por separado.
+
+## 4. Encuentra otros iconos
 
 1. Busca el diseño en [iconoir.com](https://iconoir.com/).
 2. Consulta su nombre Kotlin y el SVG de origen en [`upstream/catalog.json`](../upstream/catalog.json). Por ejemplo, `Bell` corresponde a `bell.svg` en `regular`.
@@ -95,6 +117,6 @@ Todos los vectores tienen un tamaño predeterminado de **24 dp**; `Modifier.size
 | --- | --- |
 | `Unresolved reference: Bell` | Agrega `import io.github.alvarordev.iconoir.compose.regular.Bell` además del import de `Iconoir`. |
 | No encuentro `Iconoir.Solid.<Nombre>` | Verifica en el [catálogo](../upstream/catalog.json) si existe una variante `solid` para ese nombre. |
-| Gradle no encuentra la dependencia | Confirma la versión `0.1.0`, `mavenCentral()` en los repositorios y la configuración de `google()` para las dependencias AndroidX. |
+| Gradle no encuentra la dependencia | Confirma la versión `0.2.0`, `mavenCentral()` en los repositorios y la configuración de `google()` para las dependencias AndroidX. |
 
 Para ejemplos compilables, revisa [`samples/android-consumer`](../samples/android-consumer) y [`samples/kmp-consumer`](../samples/kmp-consumer).

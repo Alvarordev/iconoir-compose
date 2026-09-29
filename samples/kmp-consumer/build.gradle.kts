@@ -16,7 +16,7 @@ kotlin {
     jvmToolchain(17)
     sourceSets {
         commonMain.dependencies {
-            implementation("io.github.alvarordev:iconoir-compose:0.1.0-SNAPSHOT")
+            implementation("io.github.alvarordev:iconoir-compose:0.2.0-SNAPSHOT")
             implementation("org.jetbrains.compose.ui:ui:1.10.3")
             implementation("org.jetbrains.compose.foundation:foundation:1.10.3")
         }

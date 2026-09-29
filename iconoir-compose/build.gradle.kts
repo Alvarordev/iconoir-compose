@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "io.github.alvarordev"
-version = providers.gradleProperty("releaseVersion").orElse("0.1.0-SNAPSHOT").get()
+version = providers.gradleProperty("releaseVersion").orElse("0.2.0-SNAPSHOT").get()
 
 kotlin {
     android {

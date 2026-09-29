@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import io.github.alvarordev.iconoir.compose.Iconoir
+import io.github.alvarordev.iconoir.compose.rememberIconoirVector
 import io.github.alvarordev.iconoir.compose.regular.Bell
 import io.github.alvarordev.iconoir.compose.regular.NetworkLeft
 import io.github.alvarordev.iconoir.compose.regular.StyleBorder
@@ -35,6 +36,7 @@ class GalleryActivity : ComponentActivity() {
                     Column(Modifier.safeDrawingPadding().padding(24.dp)) {
                         listOf(
                             "Regular · bell" to Iconoir.Regular.Bell,
+                            "Regular · bell (weight 2.5)" to rememberIconoirVector(Iconoir.Regular.Bell, strokeWeight = 2.5f),
                             "Solid · heart" to Iconoir.Solid.Heart,
                             "Regular · network-left (transforms)" to Iconoir.Regular.NetworkLeft,
                             "Regular · style-border (dash)" to Iconoir.Regular.StyleBorder,
