@@ -1,6 +1,6 @@
 # Maintaining Iconoir Compose
 
-[README](../README.md) · [Specification](../specs/001-iconoir-compose/spec.md) · [Release workflow](../.github/workflows/release.yml)
+[README](../README.md) · [Release workflow](../.github/workflows/release.yml)
 
 This document is for contributors updating the catalog, running checks, or publishing a new version. Installation and API examples for consumers live in the [README](../README.md) and [Spanish quick guide](guia-rapida.md).
 
